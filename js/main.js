@@ -99,8 +99,8 @@ function aggancia() {
   frenata++; delete body.dataset.frena;         // se la ballerina sta ancora frenando, riparte a velocita' piena
   $('ballerina').getAnimations({ subtree: true }).forEach(a => { a.playbackRate = 1; });
   setFase('suona');
-  clearTimeout(timerScritta);                   // la scritta resta ~4 s e poi sfuma
-  timerScritta = setTimeout(() => { if (body.dataset.scritta) body.dataset.scritta = 'fine'; }, 4000);
+  clearTimeout(timerScritta);                   // la scritta resta ~10 s e poi sfuma
+  timerScritta = setTimeout(() => { if (body.dataset.scritta) body.dataset.scritta = 'fine'; }, 10000);
   daBattuta = Carillon.battutaCorrente();       // riparte dall'inizio della battuta corrente
   Carillon.avviaAutoplay(daBattuta, battuta => {
     if (battuta > Math.max(BATTUTA_CASSETTO, daBattuta) && fase === 'suona') {

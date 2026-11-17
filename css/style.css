@@ -36,9 +36,9 @@ body[data-fase="suona"] #invito, body[data-fase="aperto"] #invito, body[data-scr
   font-size: 4.2cqw; font-style: italic; letter-spacing: .06em; color: #f4e3b8;
   text-shadow: 0 1px 6px rgba(0, 0, 0, .6); pointer-events: none; box-sizing: border-box;
 }
-#scritta p { margin: 0 0 .3em; opacity: 0; transition: opacity .8s; }
+#scritta p { margin: 0 0 .3em; opacity: 0; transition: opacity 1.5s; }
 body[data-scritta="1"] #scritta1, body[data-scritta="2"] #scritta1, body[data-scritta="2"] #scritta2 { opacity: .9; }
-body[data-scritta="fine"] #scritta p { opacity: 0; transition-duration: 1.5s; }
+body[data-scritta="fine"] #scritta p { opacity: 0; transition-duration: 3s; }
 
 /* Luce piu' calda e vignettatura durante il brano */
 #luce {
