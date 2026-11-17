@@ -157,4 +157,14 @@ const chiudi = () => { zoom.hidden = true; };
 zoom.addEventListener('click', chiudi);          // anche toccando fuori (la carta ha pointer-events:none)
 $('chiudi').addEventListener('click', chiudi);
 document.addEventListener('keydown', e => { if (e.key === 'Escape') chiudi(); });
+
+/* ---------- Copertina "apri il regalo" ----------
+   Il 'click' arriva dopo il touchend: e' il gesto valido per sbloccare l'audio sui telefoni. */
+const copertina = $('copertina');
+copertina.addEventListener('click', () => {
+  copertina.classList.add('aperta');            // subito non intercetta piu' i tocchi, poi sfuma
+  Carillon.inizializza();
+  Carillon.campanella();
+  setTimeout(() => { copertina.hidden = true; }, 1300);
+}, { once: true });
 })();

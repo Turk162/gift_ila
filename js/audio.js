@@ -180,5 +180,11 @@ function avviaAutoplay(daBattuta, onBattuta, onFine) {
   }, 40);
 }
 
-window.Carillon = { inizializza, scatto, notaSuccessiva, battutaCorrente, azzera, avviaAutoplay, ferma, TOT_BATTUTE };
+// Nota singola di conferma (copertina iniziale): serve anche a "scaldare" l'audio su iOS.
+function campanella() {
+  if (!ctx) return;
+  lamella(frequenza('E6'), ctx.currentTime, 0.22, 0, 0.8);
+}
+
+window.Carillon = { inizializza, campanella, scatto, notaSuccessiva, battutaCorrente, azzera, avviaAutoplay, ferma, TOT_BATTUTE };
 })();

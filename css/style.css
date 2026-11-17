@@ -99,3 +99,23 @@ body[data-cassetto="aperto"] #biglietto { transform: translateY(-39%) scale(.95)
   filter: drop-shadow(0 6px 24px rgba(0, 0, 0, .6)); }
 #chiudi { position: absolute; top: max(12px, env(safe-area-inset-top)); right: 14px; width: 44px; height: 44px; border-radius: 50%;
   border: 1px solid rgba(244, 227, 184, .6); background: rgba(0, 0, 0, .4); color: #f4e3b8; font-size: 28px; line-height: 1; cursor: pointer; }
+
+/* Copertina "apri il regalo": sopra tutto; al tocco non intercetta piu' nulla e sfuma */
+#copertina {
+  position: fixed; inset: 0; z-index: 200; width: 100%; margin: 0; padding: 0; border: 0; cursor: pointer;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1.6rem;
+  font-family: Georgia, "Times New Roman", serif; font-style: italic; font-size: clamp(1.25rem, 6vw, 1.9rem);
+  letter-spacing: .06em; color: #f4e3b8; text-shadow: 0 1px 8px rgba(0, 0, 0, .7);
+  background: radial-gradient(ellipse at 50% 45%, rgba(110, 24, 44, .55) 0%, rgba(18, 12, 16, .92) 70%);
+  background-color: rgba(18, 12, 16, .9);
+  opacity: 1; transition: opacity 1.2s ease;
+}
+#copertina span { animation: copertina-respiro 3.6s ease-in-out infinite; padding: 0 8%; text-align: center; }
+#copertina #fiocco { width: 5.5rem; height: auto; opacity: .9; filter: drop-shadow(0 0 8px rgba(244, 227, 184, .35)); animation: copertina-respiro 3.6s ease-in-out infinite; }
+#copertina:focus-visible { outline: 2px solid #f4e3b8; outline-offset: -8px; }
+#copertina.aperta { opacity: 0; pointer-events: none; }
+@keyframes copertina-respiro {
+  0%, 100% { opacity: .65; text-shadow: 0 0 6px rgba(244, 227, 184, .15); }
+  50% { opacity: 1; text-shadow: 0 0 22px rgba(244, 227, 184, .65); }
+}
+#copertina[hidden] { display: none; }
