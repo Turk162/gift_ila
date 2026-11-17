@@ -1,0 +1,101 @@
+/* Carillon con ballerina. Le fasi (body[data-fase]) guidano le animazioni. */
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html, body { margin: 0; height: 100%; overflow: hidden; background: #120c10; }
+body { display: grid; place-items: center; font-family: Georgia, "Times New Roman", serif; }
+
+/* Scena 2:3 che sta nel viewport (min fra larghezza e altezza disponibili) */
+#scena {
+  position: relative; z-index: 1; container-type: size;
+  width: min(100vw, 66.666vh);
+  width: min(100vw, calc(100dvh * 2 / 3));
+  aspect-ratio: 2 / 3;
+  user-select: none; -webkit-user-select: none;
+}
+
+/* Sfondo a tutta finestra (3:2 orizzontale, cover): in verticale il bordo del tavolo (70% dell'altezza) resta sempre sotto la cassa */
+#sfondo { position: fixed; inset: 0; z-index: 0; background: #1a0f18 url(../assets/sfondo.webp) 50% 50% / cover no-repeat; }
+
+/* Livelli: left/top/width inline da LAYOUT (main.js); ordine = z-index */
+.livello { position: absolute; margin: 0; padding: 0; border: 0; background: none; }
+.livello svg, .livello img { display: block; width: 100%; height: auto; }
+#cassa { z-index: 3; } #ballerina { z-index: 4; }
+#biglietto { z-index: 5; } #cassetto { z-index: 6; } #manovella { z-index: 7; } #freccia { z-index: 8; }
+#cassa, #cassetto, #ballerina, #freccia { pointer-events: none; }
+
+/* Invito */
+#invito {
+  position: absolute; z-index: 9; left: 0; right: 0; top: 5%; margin: 0; text-align: center;
+  font-size: 4.2cqw; font-style: italic; letter-spacing: .06em; color: #f4e3b8; opacity: .85;
+  text-shadow: 0 1px 6px rgba(0, 0, 0, .6); transition: opacity 1.2s; pointer-events: none;
+}
+body[data-fase="suona"] #invito, body[data-fase="aperto"] #invito, body[data-scritta] #invito { opacity: 0; }
+
+/* Scritta in due tempi durante la carica (body.dataset.scritta = '1' | '2' | 'fine', guidato da main.js) */
+#scritta {
+  position: absolute; z-index: 9; left: 0; right: 0; top: 5%; margin: 0; padding: 0 6%; text-align: center;
+  font-size: 4.2cqw; font-style: italic; letter-spacing: .06em; color: #f4e3b8;
+  text-shadow: 0 1px 6px rgba(0, 0, 0, .6); pointer-events: none; box-sizing: border-box;
+}
+#scritta p { margin: 0 0 .3em; opacity: 0; transition: opacity .8s; }
+body[data-scritta="1"] #scritta1, body[data-scritta="2"] #scritta1, body[data-scritta="2"] #scritta2 { opacity: .9; }
+body[data-scritta="fine"] #scritta p { opacity: 0; transition-duration: 1.5s; }
+
+/* Luce piu' calda e vignettatura durante il brano */
+#luce {
+  position: fixed; inset: 0; z-index: 10; pointer-events: none; opacity: 0; transition: opacity 2.5s;
+  background: radial-gradient(ellipse at 50% 42%, rgba(255, 190, 110, .22) 0%, rgba(255, 150, 70, .05) 45%, rgba(40, 8, 0, .6) 100%);
+}
+body[data-fase="suona"] #luce, body[data-fase="aperto"] #luce { opacity: 1; }
+
+/* Manovella */
+#manovella { cursor: grab; touch-action: none; aspect-ratio: 1; border-radius: 50%; }
+#manovella-ruota { position: absolute; transform-origin: 50% 50%; will-change: transform; pointer-events: none; }   /* left/top/width da LAYOUT */
+
+/* Freccia circolare: gira piano, pulsa se si tocca la manovella senza trascinare */
+#freccia { opacity: 0; transition: opacity .8s; }
+body[data-fase="ferma"] #freccia, body[data-fase="carica"] #freccia { opacity: .9; }
+#freccia svg { animation: freccia-giro 9s linear infinite; }
+#freccia.pulsa { animation: pulsa .6s ease-out; }
+@keyframes freccia-giro { to { transform: rotate(360deg); } }
+@keyframes pulsa { 40% { transform: scale(1.3); filter: brightness(1.5); } }
+
+/* Ballerina: piroetta 2D (scaleX in coseno) + leggero ondeggiare verticale.
+   [data-frena] la tiene animata mentre JS rallenta (ease-out) fino a fermarla di fronte. */
+#ballerina-giro { transform-origin: 50% 50%; position: relative; }
+body[data-fase="suona"] #ballerina-giro, body[data-fase="aperto"] #ballerina-giro, body[data-frena] #ballerina-giro {
+  animation: piroetta 2.6s cubic-bezier(.37, 0, .63, 1) infinite;   /* seno su ogni tratto = andamento coseno */
+}
+body[data-fase="suona"] #ballerina, body[data-fase="aperto"] #ballerina, body[data-frena] #ballerina {
+  animation: ondeggia 1.3s ease-in-out infinite;
+}
+/* Vista di spalle: tra 25% e 75% del ciclo (scaleX passa per 0) il retro prende il posto del fronte, a gradino.
+   Stessa durata e stessa attivazione di piroetta, cosi' anche il rallentamento (playbackRate) resta sincronizzato.
+   Il retro e' controspecchiato (scaleX(-1)) per annullare lo specchio di piroetta: si vede com'e' disegnato. */
+#ballerina-giro img.retro { position: absolute; left: 0; top: 0; opacity: 0; transform: scaleX(-1); }
+body[data-fase="suona"] #ballerina-giro img, body[data-fase="aperto"] #ballerina-giro img, body[data-frena] #ballerina-giro img {
+  animation: 2.6s infinite;
+}
+body[data-fase="suona"] #ballerina-giro img.fronte, body[data-fase="aperto"] #ballerina-giro img.fronte, body[data-frena] #ballerina-giro img.fronte { animation-name: vis-fronte; }
+body[data-fase="suona"] #ballerina-giro img.retro, body[data-fase="aperto"] #ballerina-giro img.retro, body[data-frena] #ballerina-giro img.retro { animation-name: vis-retro; }
+@keyframes vis-fronte { 0%, 75% { opacity: 1; animation-timing-function: step-end; } 25% { opacity: 0; animation-timing-function: step-end; } 100% { opacity: 1; } }
+@keyframes vis-retro  { 0%, 75% { opacity: 0; animation-timing-function: step-end; } 25% { opacity: 1; animation-timing-function: step-end; } 100% { opacity: 0; } }
+@keyframes piroetta { 0%, 100% { transform: scaleX(1); } 50% { transform: scaleX(-1); } }
+@keyframes ondeggia { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-2.5%); } }
+
+/* Cassetto e biglietto (data-cassetto="aperto" resta anche dopo lo stop) */
+#cassetto { transform-origin: 50% 0; transition: transform 1.8s cubic-bezier(.3, .1, .2, 1); }
+body[data-cassetto="aperto"] #cassetto { transform: translateY(60%) scale(1.06); }
+#biglietto { cursor: default; pointer-events: none; transform: scale(.55); opacity: 0;
+  transition: transform 1.8s cubic-bezier(.3, .1, .2, 1) .5s, opacity .3s .5s; }
+body[data-cassetto="aperto"] #biglietto { transform: translateY(-39%) scale(.95) rotate(-2deg); opacity: 1;
+  pointer-events: auto; cursor: pointer; animation: bagliore 2.4s ease-in-out 2.4s infinite alternate; }
+@keyframes bagliore { to { filter: drop-shadow(0 0 6px rgba(255, 220, 140, .9)); } }
+
+/* Biglietto a tutto schermo */
+#zoom { position: fixed; inset: 0; z-index: 100; display: grid; place-items: center; background: rgba(8, 4, 8, .88); }
+#zoom[hidden] { display: none; }
+#zoom-carta { width: 92vw; height: 84vh; height: 84dvh; display: grid; place-items: center; pointer-events: none; }
+#zoom-carta > * { display: block; width: min(92vw, calc(84dvh * 3 / 2)); height: auto; max-width: 100%; max-height: 100%; object-fit: contain;
+  filter: drop-shadow(0 6px 24px rgba(0, 0, 0, .6)); }
+#chiudi { position: absolute; top: max(12px, env(safe-area-inset-top)); right: 14px; width: 44px; height: 44px; border-radius: 50%;
+  border: 1px solid rgba(244, 227, 184, .6); background: rgba(0, 0, 0, .4); color: #f4e3b8; font-size: 28px; line-height: 1; cursor: pointer; }

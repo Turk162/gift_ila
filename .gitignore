@@ -1,0 +1,4 @@
+assets_src/
+__pycache__/
+.playwright-mcp/
+prompts_grafica.md

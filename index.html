@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<title>Un carillon per te</title>
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body data-fase="ferma">
+
+<div id="sfondo" aria-hidden="true"></div>
+
+<!-- Livelli del carillon: <div class="livello"> posizionati da LAYOUT in js/main.js.
+     Il cassetto e' assets/cassetto.webp (frontale a sormonto sulla nicchia). -->
+<main id="scena">
+
+  <div id="cassa" class="livello"><img src="assets/cassa.webp" alt="" draggable="false"></div>
+
+  <div id="ballerina" class="livello">
+    <div id="ballerina-giro"><img class="fronte" src="assets/ballerina.webp" alt="" draggable="false"><img class="retro" src="assets/retro_ballerina.webp" alt="" draggable="false"></div>
+  </div>
+
+  <button type="button" id="biglietto" class="livello" aria-label="Apri il biglietto"><img src="assets/biglietto.webp" alt="Biglietto" draggable="false"></button>
+
+  <div id="cassetto" class="livello"><img src="assets/cassetto.webp" alt="" draggable="false"></div>
+
+  <!-- #manovella e' solo l'area di tocco (centrata sul disco); l'immagine, piu' grande, ruota al suo interno -->
+  <div id="manovella" class="livello" role="button" tabindex="0" aria-label="Manovella del carillon: trascinala in senso orario per caricarlo">
+    <div id="manovella-ruota"><img src="assets/manovella.webp" alt="" draggable="false"></div>
+  </div>
+
+  <div id="freccia" class="livello" aria-hidden="true">
+    <svg viewBox="0 0 100 100">
+      <path d="M50 8 A42 42 0 1 1 8 50" fill="none" stroke="#f4e3b8" stroke-width="3" stroke-linecap="round" stroke-dasharray="2 6"/>
+      <polygon points="8,36 1,50 15,50" fill="#f4e3b8"/>
+    </svg>
+  </div>
+
+  <p id="invito">Alza il volume e gira la manovella</p>
+  <div id="scritta" aria-live="polite">
+    <p id="scritta1">Una laurea va sempre celebrata…</p>
+    <p id="scritta2">…però adesso basta eh!</p>
+  </div>
+</main>
+<div id="luce"></div>
+
+<div id="zoom" hidden role="dialog" aria-modal="true" aria-label="Biglietto a tutto schermo">
+  <button type="button" id="chiudi" aria-label="Chiudi il biglietto">&times;</button>
+  <div id="zoom-carta"></div>
+</div>
+
+<script src="js/audio.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>
